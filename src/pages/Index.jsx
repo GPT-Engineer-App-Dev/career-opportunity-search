@@ -1,17 +1,85 @@
-// Update this page (the content is just a fallback if you fail and example)
-// Use chakra-ui
-import { Container, Text, VStack } from "@chakra-ui/react";
+import React, { useState } from "react";
+import { Box, Container, Heading, Input, Button, VStack, HStack, Text, Badge, SimpleGrid, useColorModeValue } from "@chakra-ui/react";
+import { FaSearch, FaBriefcase, FaMapMarkerAlt, FaDollarSign } from "react-icons/fa";
 
-// Example of using react-icons
-// import { FaRocket } from "react-icons/fa";
-// <IconButton aria-label="Add" icon={<FaRocket />} size="lg" />; // IconButton would also have to be imported from chakra
+const jobListings = [
+  { id: 1, title: "Frontend Developer", company: "TechCorp", location: "New York, NY", salary: "$80,000 - $120,000" },
+  { id: 2, title: "Backend Engineer", company: "DataSystems", location: "San Francisco, CA", salary: "$90,000 - $140,000" },
+  { id: 3, title: "UX Designer", company: "CreativeMinds", location: "Austin, TX", salary: "$70,000 - $110,000" },
+  { id: 4, title: "Data Scientist", company: "AI Innovations", location: "Seattle, WA", salary: "$100,000 - $160,000" },
+  { id: 5, title: "DevOps Engineer", company: "CloudTech", location: "Chicago, IL", salary: "$85,000 - $130,000" },
+];
+
+const JobCard = ({ job }) => {
+  const cardBg = useColorModeValue("white", "gray.700");
+  return (
+    <Box p={5} shadow="md" borderWidth="1px" borderRadius="lg" bg={cardBg}>
+      <Heading fontSize="xl">{job.title}</Heading>
+      <Text mt={2}>{job.company}</Text>
+      <HStack mt={2}>
+        <FaMapMarkerAlt />
+        <Text>{job.location}</Text>
+      </HStack>
+      <HStack mt={2}>
+        <FaDollarSign />
+        <Text>{job.salary}</Text>
+      </HStack>
+      <Button mt={4} colorScheme="blue" size="sm">
+        Apply Now
+      </Button>
+    </Box>
+  );
+};
 
 const Index = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredJobs = jobListings.filter(
+    (job) =>
+      job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      job.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      job.location.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <Container centerContent maxW="container.md" height="100vh" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-      <VStack spacing={4}>
-        <Text fontSize="2xl">Your Blank Canvas</Text>
-        <Text>Chat with the agent to start making edits.</Text>
+    <Container maxW="container.xl" py={10}>
+      <VStack spacing={8} align="stretch">
+        <Box textAlign="center">
+          <Heading as="h1" size="2xl" mb={2}>
+            Find Your Dream Job
+          </Heading>
+          <Text fontSize="xl" color="gray.500">
+            Discover opportunities that match your skills and aspirations
+          </Text>
+        </Box>
+
+        <HStack>
+          <Input
+            placeholder="Search jobs..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <Button leftIcon={<FaSearch />} colorScheme="blue">
+            Search
+          </Button>
+        </HStack>
+
+        <Box>
+          <Heading as="h2" size="lg" mb={4}>
+            Featured Job Listings
+          </Heading>
+          <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
+            {filteredJobs.map((job) => (
+              <JobCard key={job.id} job={job} />
+            ))}
+          </SimpleGrid>
+        </Box>
+
+        <Box textAlign="center">
+          <Button rightIcon={<FaBriefcase />} colorScheme="blue" size="lg">
+            View All Jobs
+          </Button>
+        </Box>
       </VStack>
     </Container>
   );
