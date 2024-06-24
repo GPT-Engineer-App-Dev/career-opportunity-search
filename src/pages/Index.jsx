@@ -1,14 +1,7 @@
-import React, { useState } from "react";
-import { Box, Container, Heading, Input, Button, VStack, HStack, Text, Badge, SimpleGrid, useColorModeValue } from "@chakra-ui/react";
-import { FaSearch, FaBriefcase, FaMapMarkerAlt, FaDollarSign } from "react-icons/fa";
-
-const jobListings = [
-  { id: 1, title: "Frontend Developer", company: "TechCorp", location: "New York, NY", salary: "$80,000 - $120,000" },
-  { id: 2, title: "Backend Engineer", company: "DataSystems", location: "San Francisco, CA", salary: "$90,000 - $140,000" },
-  { id: 3, title: "UX Designer", company: "CreativeMinds", location: "Austin, TX", salary: "$70,000 - $110,000" },
-  { id: 4, title: "Data Scientist", company: "AI Innovations", location: "Seattle, WA", salary: "$100,000 - $160,000" },
-  { id: 5, title: "DevOps Engineer", company: "CloudTech", location: "Chicago, IL", salary: "$85,000 - $130,000" },
-];
+import React, { useState, useEffect } from "react";
+import { Box, Container, Heading, Input, Button, VStack, HStack, Text, SimpleGrid, useColorModeValue } from "@chakra-ui/react";
+import { FaSearch, FaBriefcase, FaMapMarkerAlt, FaDollarSign, FaPlus } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const JobCard = ({ job }) => {
   const cardBg = useColorModeValue("white", "gray.700");
@@ -33,6 +26,28 @@ const JobCard = ({ job }) => {
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [jobListings, setJobListings] = useState([
+    { id: 1, title: "Frontend Developer", company: "TechCorp", location: "New York, NY", salary: "$80,000 - $120,000" },
+    { id: 2, title: "Backend Engineer", company: "DataSystems", location: "San Francisco, CA", salary: "$90,000 - $140,000" },
+    { id: 3, title: "UX Designer", company: "CreativeMinds", location: "Austin, TX", salary: "$70,000 - $110,000" },
+    { id: 4, title: "Data Scientist", company: "AI Innovations", location: "Seattle, WA", salary: "$100,000 - $160,000" },
+    { id: 5, title: "DevOps Engineer", company: "CloudTech", location: "Chicago, IL", salary: "$85,000 - $130,000" },
+  ]);
+
+  const handleNewJob = (newJob) => {
+    setJobListings((prevListings) => [...prevListings, newJob]);
+  };
+
+  useEffect(() => {
+    const storedJobs = localStorage.getItem('jobListings');
+    if (storedJobs) {
+      setJobListings(JSON.parse(storedJobs));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('jobListings', JSON.stringify(jobListings));
+  }, [jobListings]);
 
   const filteredJobs = jobListings.filter(
     (job) =>
@@ -76,9 +91,14 @@ const Index = () => {
         </Box>
 
         <Box textAlign="center">
-          <Button rightIcon={<FaBriefcase />} colorScheme="blue" size="lg">
-            View All Jobs
-          </Button>
+          <HStack spacing={4} justify="center">
+            <Button rightIcon={<FaBriefcase />} colorScheme="blue" size="lg">
+              View All Jobs
+            </Button>
+            <Button as={Link} to="/post-job" rightIcon={<FaPlus />} colorScheme="green" size="lg">
+              Post a Job
+            </Button>
+          </HStack>
         </Box>
       </VStack>
     </Container>
